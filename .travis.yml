@@ -8,7 +8,7 @@ script: bash -ex ./.travis-docker.sh
 env:
   global:
     - PACKAGE="owl"
-    - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:."
+    - PINS="owl-base:. owl-aeos:. owl-top:. owl-zoo:. owl:. eigen:https://github.com/mseri/eigen/archive/eigen-nolto.tar.gz"
 
 matrix:
   include:
