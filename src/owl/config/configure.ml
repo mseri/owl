@@ -38,6 +38,7 @@ let get_default_cflags _c = [
 
 let get_default_libs _c =
   [
+    "-llapacke";
     "-lopenblas";
     "-lm";
   ]
