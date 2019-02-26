@@ -246,6 +246,11 @@ some details on how your openblas has been installed and the output of
         @ get_ocaml_devmode_flags c
       in
 
+      if C.c_test c test_lapacke_working_code
+          ~c_flags:cflags ~link_flags:libs
+         |> not 
+      then failwith "Unable to link against openblas and lapacke.";
+
       (* assemble default config *)
       let conf : C.Pkg_config.package_conf = { cflags; libs } in
 
