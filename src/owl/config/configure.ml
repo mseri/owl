@@ -179,11 +179,9 @@ let () =
         Base.Option.value ~default:openblas_default
           (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"openblas")
       in
-      if not @@ C.c_test c test_linking
-          ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
-      then begin
-        Printf.printf {|
-Unable to link against openblas: the current values for cflags and libs
+      (* sanity check *)
+      let error lib cflags libs = Printf.printf {|
+Unable to link against %s: the current values for cflags and libs
 are respectively %s and %s.
 
 Usually this is due to missing paths for pkg-config. Try to re-install
@@ -193,12 +191,19 @@ PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/openblas/lib/pkgconfig
 
 If this does not work please open an issue in the owl repository, adding
 some details on how your openblas has been installed and the output of
-`src/owl/config/configure.exe --verbose`.
+`src/owl/config/configure.exe --verbose`.\n%!
         |}
-          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.cflags)
-          Base.(string_of_sexp @@ sexp_of_list sexp_of_string openblas_conf.libs);
+          lib
+          Base.(string_of_sexp @@ sexp_of_list sexp_of_string cflags)
+          Base.(string_of_sexp @@ sexp_of_list sexp_of_string libs)
+      in
+      if not @@ C.c_test c test_linking
+          ~c_flags:openblas_conf.cflags ~link_flags:openblas_conf.libs
+      then begin
+        error "openblas" openblas_conf.cflags openblas_conf.libs;
         failwith "Unable to link against openblas."
       end;
+
       let lapacke_lib =
         let needs_lapacke_flag =
           C.c_test c test_lapacke_working_code
@@ -232,6 +237,14 @@ some details on how your openblas has been installed and the output of
         @ get_expmode_cflags c
         @ get_openmp_cflags c
       in
+
+      (* finaly sanity check *)
+      if not @@ C.c_test c test_lapacke_working_code
+          ~c_flags:cflags ~link_flags:libs
+      then begin
+        error "lapacke" cflags libs;
+        failwith "Unable to link against lapacke."
+      end;
 
       (* configure ocaml options *)
       let ocaml_flags =
