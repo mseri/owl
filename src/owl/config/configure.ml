@@ -124,9 +124,13 @@ let openblas_default : C.Pkg_config.package_conf =
   let p0 = "/usr/local/opt/openblas/lib" in
   let p1 = "/opt/OpenBLAS/lib/" in
   let p2 = "/usr/local/lib/openblas/lib" in
+  let p4 = "/usr/lib/x86_64-linux-gnu/openblas" in
+  let p5 = "/usr/lib/openblas-base/" in
   let libs = if Sys.file_exists p0 then ["-L" ^ p0]
     else if Sys.file_exists p1 then ["-L" ^ p1]
     else if Sys.file_exists p2 then ["-L" ^ p2]
+    else if Sys.file_exists p4 then ["-L" ^ p4]
+    else if Sys.file_exists p5 then ["-L" ^ p5]
     else []
   in
   let p0 = "/usr/include/openblas" in
@@ -205,13 +209,18 @@ some details on how your openblas has been installed and the output of
             ~c_flags:openblas_conf.cflags ~link_flags:(openblas_conf.libs @ ["-lm"])
           |> not
         in
-        if needs_lapacke_flag then ["-llapacke"] else []
+        if needs_lapacke_flag then
+          let open Base.Option.Monad_infix in
+          Base.Option.value ~default:{libs=["-llapacke"];cflags=[]}
+            (C.Pkg_config.get c >>= C.Pkg_config.query ~package:"lapacke")
+        else C.Pkg_config.{libs=[];cflags=[]}
       in
       (* configure link options *)
       let libs =
         []
-        @ lapacke_lib
+        @ lapacke_lib.libs
         @ openblas_conf.libs
+        @ lapacke_lib.libs
         @ default_libs
         @ default_gcc_path
         @ get_accelerate_libs c
@@ -221,7 +230,9 @@ some details on how your openblas has been installed and the output of
       (* configure compile options *)
       let cflags =
         []
+        @ lapacke_lib.cflags
         @ openblas_conf.cflags
+        @ lapacke_lib.cflags
         @ default_cflags
         @ get_devmode_cflags c
         @ get_expmode_cflags c
