@@ -27,8 +27,8 @@ jobs:
     - stage: "build only"
       name: "ubuntu"
       script: docker build -f docker/Dockerfile.ubuntu .
-    - stage: "build only"
-      name: "ubuntu.arm"
-      script: docker build -f docker/Dockerfile.ubuntu.arm .
+    # - stage: "build only"
+    #   name: "ubuntu.arm"
+    #   script: docker build -f docker/Dockerfile.ubuntu.arm .
     - stage: test
       script: docker images
