@@ -3,13 +3,13 @@ language: c
 services:
   - docker
 
-install:
-  - docker build -f docker/Dockerfile.alpine .
-  - docker build -f docker/Dockerfile.debian .
-  - docker build -f docker/Dockerfile.fedora .
-  - docker build -f docker/Dockerfile.opensuse .
-  - docker build -f docker/Dockerfile.ubuntu .
-  - docker build -f docker/Dockerfile.ubuntu.arm .
-
-script:
-  - docker images
+jobs:
+  include:
+    - script: docker build -f docker/Dockerfile.alpine .
+    - script: docker build -f docker/Dockerfile.debian .
+    - script: docker build -f docker/Dockerfile.fedora .
+    - script: docker build -f docker/Dockerfile.opensuse .
+    - script: docker build -f docker/Dockerfile.ubuntu .
+    - script: docker build -f docker/Dockerfile.ubuntu.arm .
+    - stage: check
+      script: docker images
