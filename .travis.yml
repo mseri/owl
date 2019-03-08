@@ -13,16 +13,22 @@ jobs:
     - stage: start
       script: docker images
     - stage: "build only"
+      name: "alpine"
       script: docker build -f docker/Dockerfile.alpine .
     - stage: "build only"
+      name: "debian"
       script: docker build -f docker/Dockerfile.debian .
     - stage: "build only"
+      name: "fedora"
       script: docker build -f docker/Dockerfile.fedora .
     - stage: "build only"
+      name: "opensuse"
       script: docker build -f docker/Dockerfile.opensuse .
     - stage: "build only"
+      name: "ubuntu"
       script: docker build -f docker/Dockerfile.ubuntu .
     - stage: "build only"
+      name: "ubuntu.arm"
       script: docker build -f docker/Dockerfile.ubuntu.arm .
     - stage: test
       script: docker images
