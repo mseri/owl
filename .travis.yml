@@ -3,13 +3,26 @@ language: c
 services:
   - docker
 
+stages:
+  - start
+  - "build only"
+  - test
+
 jobs:
   include:
-    - script: docker build -f docker/Dockerfile.alpine .
-    - script: docker build -f docker/Dockerfile.debian .
-    - script: docker build -f docker/Dockerfile.fedora .
-    - script: docker build -f docker/Dockerfile.opensuse .
-    - script: docker build -f docker/Dockerfile.ubuntu .
-    - script: docker build -f docker/Dockerfile.ubuntu.arm .
-    - stage: check
+    - stage: start
+      script: docker images
+    - stage: "build only"
+      script: docker build -f docker/Dockerfile.alpine .
+    - stage: "build only"
+      script: docker build -f docker/Dockerfile.debian .
+    - stage: "build only"
+      script: docker build -f docker/Dockerfile.fedora .
+    - stage: "build only"
+      script: docker build -f docker/Dockerfile.opensuse .
+    - stage: "build only"
+      script: docker build -f docker/Dockerfile.ubuntu .
+    - stage: "build only"
+      script: docker build -f docker/Dockerfile.ubuntu.arm .
+    - stage: test
       script: docker images
