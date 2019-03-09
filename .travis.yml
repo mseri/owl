@@ -14,21 +14,34 @@ jobs:
       script: docker images
     - stage: "build only"
       name: "alpine"
-      script: docker build -f docker/Dockerfile.alpine .
+      script: \
+        docker build -t alpine -f docker/Dockerfile.alpine . && \
+        docker run alpine "dune exec docker/test_docker.ml alpine" && \
+        test -f alpine.png
     - stage: "build only"
       name: "debian"
-      script: docker build -f docker/Dockerfile.debian .
+      script: docker build -t debian -f docker/Dockerfile.debian . && \
+        docker run debian "dune exec docker/test_docker.ml debian" && \
+        test -f debian.png
     - stage: "build only"
       name: "fedora"
-      script: docker build -f docker/Dockerfile.fedora .
+      script: docker build -t fedora -f docker/Dockerfile.fedora . && \
+        docker run fedora "dune exec docker/test_docker.ml fedora" && \
+        test -f fedora.png
     - stage: "build only"
       name: "opensuse"
-      script: docker build -f docker/Dockerfile.opensuse .
+      script: docker build -t opensuse -f docker/Dockerfile.opensuse . && \
+        docker run opensuse "dune exec docker/test_docker.ml opensuse" && \
+        test -f opensuse.png
     - stage: "build only"
       name: "ubuntu"
-      script: docker build -f docker/Dockerfile.ubuntu .
+      script: docker build -t ubuntu -f docker/Dockerfile.ubuntu . && \
+        docker run ubuntu "dune exec docker/test_docker.ml ubuntu" && \
+        test -f ubuntu.png
     # - stage: "build only"
     #   name: "ubuntu.arm"
-    #   script: docker build -f docker/Dockerfile.ubuntu.arm .
+    #   script: docker build -t ubuntu_arm -f docker/Dockerfile.ubuntu.arm . && \
+    #   docker run arm "dune exec docker/test_docker.ml arm" && \
+    #   test -f arm.png
     - stage: test
       script: docker images
