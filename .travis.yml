@@ -8,7 +8,7 @@ script: bash -ex ./.travis-docker.sh
 env:
   global:
     - PACKAGE="owl"
-    - PINS="owl-base:. owl-plplot:. owl-top:. owl-zoo:. owl:."
+    - PINS="eigen:https://github.com/nandor/eigen/archive/master.tar.gz owl-base:. owl-plplot:. owl-top:. owl-zoo:. owl:."
 
 matrix:
   include:
